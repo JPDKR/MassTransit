@@ -1,5 +1,4 @@
-﻿using MassTransit;
-using MassTransit.Introduction.Consumers;
+﻿using MassTransit.Introduction.Models;
 
 namespace MassTransit.Introduction.Publishers
 {
@@ -12,7 +11,8 @@ namespace MassTransit.Introduction.Publishers
                 await bus.Publish
                     (new CurrentTime
                     {
-                        Value = $"El tiempo es {DateTime.UtcNow}"
+                        Value = $"El tiempo es {DateTime.UtcNow}",
+                        PropiedadNumericaFantastica = Random.Shared.Next()
                     },
                     stoppingToken);
 

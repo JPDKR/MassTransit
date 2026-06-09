@@ -1,4 +1,6 @@
-﻿namespace MassTransit.Introduction.Consumers
+﻿using MassTransit.Introduction.Models;
+
+namespace MassTransit.Introduction.Consumers
 {
     public class CurrentTimeConsumer(ILogger<CurrentTimeConsumer> logger) : IConsumer<CurrentTime>
     {

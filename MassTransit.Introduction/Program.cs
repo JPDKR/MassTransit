@@ -8,10 +8,19 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddMassTransit(busConfigurator =>
 {
+    // Configurar DB - MassTransit.EntityFrameworkCore
+    //busConfigurator.AddEntityFrameworkOutbox<ApplicationDbContext>(o =>
+    //{
+    //    o.UseSqlServer();
+    //    o.UseBusOutbox();
+    //});
+
     busConfigurator.SetKebabCaseEndpointNameFormatter();
-    
+
     busConfigurator.AddConsumer<CurrentTimeConsumer>();
     busConfigurator.AddConsumer<CurrentTimeConsumerV2>();
+
+    busConfigurator.AddConsumer<CrearOrdenConsumer>();
 
     busConfigurator.UsingRabbitMq((context, configurator) =>
     {
@@ -22,6 +31,13 @@ builder.Services.AddMassTransit(busConfigurator =>
         });
 
         configurator.ConfigureEndpoints(context);
+
+        configurator.ReceiveEndpoint("crear-orden-queue", e =>
+        {
+            e.ConcurrentMessageLimit = 10;
+            e.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
+            e.ConfigureConsumer<CrearOrdenConsumer>(context);
+        });
     });
 });
 
