@@ -30,6 +30,8 @@ Al arrancar, `MessagePublisher` (un `BackgroundService`) publica un `CrearOrdenM
 
 ```
 MassTransit.Introduction/
+├── Configuration/
+│   └── RabbitMqSettings.cs       # Opciones de conexión a RabbitMQ (bindeadas desde appsettings)
 ├── Consumers/
 │   └── CrearOrdenConsumer.cs     # Consume CrearOrdenMessage
 ├── Models/
@@ -43,12 +45,35 @@ MassTransit.Introduction/
 
 En `Program.cs`:
 
-- Se registra `CrearOrdenConsumer` y se conecta contra RabbitMQ en `localhost`.
+- Se registra `CrearOrdenConsumer` y se conecta contra RabbitMQ usando los valores de la sección `RabbitMq` en `appsettings.json`.
 - El consumer se bindea explícitamente a la cola `crear-orden-queue`, con:
   - `ConcurrentMessageLimit = 10` (hasta 10 mensajes en paralelo)
   - Reintentos: 3 intentos con 5 segundos de intervalo (`UseMessageRetry`)
 
+### Configurar la conexión a RabbitMQ
+
+La conexión se lee desde `appsettings.json` (sección `RabbitMq`):
+
+```json
+{
+  "RabbitMq": {
+    "Host": "localhost",
+    "VirtualHost": "/",
+    "Username": "guest",
+    "Password": "guest"
+  }
+}
+```
+
+Se puede sobreescribir por entorno (`appsettings.Development.json`, variables de entorno, user-secrets, etc.), por ejemplo con variables de entorno:
+
+```bash
+RabbitMq__Host=mi-broker.local
+RabbitMq__Username=miusuario
+RabbitMq__Password=micontraseña
+```
+
 ## Notas
 
-- Las credenciales de RabbitMQ están hardcodeadas (`guest`/`guest`) para simplificar el ejemplo; en un proyecto real deberían salir de configuración/secrets.
+- Las credenciales de RabbitMQ ya no están hardcodeadas: salen de configuración (`appsettings.json` / entorno), como corresponde para no exponer secretos en el código.
 - Proyecto pensado como introducción práctica a MassTransit, no como base de producción.

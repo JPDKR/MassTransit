@@ -1,10 +1,14 @@
 using MassTransit;
+using MassTransit.Introduction.Configuration;
 using MassTransit.Introduction.Consumers;
 using MassTransit.Introduction.Publishers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
+
+var rabbitMqSettings = builder.Configuration.GetSection(RabbitMqSettings.SectionName).Get<RabbitMqSettings>()
+    ?? new RabbitMqSettings();
 
 builder.Services.AddMassTransit(busConfigurator =>
 {
@@ -21,10 +25,10 @@ builder.Services.AddMassTransit(busConfigurator =>
 
     busConfigurator.UsingRabbitMq((context, configurator) =>
     {
-        configurator.Host("localhost", "/", h =>
+        configurator.Host(rabbitMqSettings.Host, rabbitMqSettings.VirtualHost, h =>
         {
-            h.Username("guest");
-            h.Password("guest");
+            h.Username(rabbitMqSettings.Username);
+            h.Password(rabbitMqSettings.Password);
         });
 
         configurator.ReceiveEndpoint("crear-orden-queue", e =>
