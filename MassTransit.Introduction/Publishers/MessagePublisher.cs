@@ -9,10 +9,12 @@ namespace MassTransit.Introduction.Publishers
             while (!stoppingToken.IsCancellationRequested)
             {
                 await bus.Publish
-                    (new CurrentTime
+                    (new CrearOrdenMessage
                     {
-                        Value = $"El tiempo es {DateTime.UtcNow}",
-                        PropiedadNumericaFantastica = Random.Shared.Next()
+                        OrdenId= Guid.NewGuid(),
+                        Cliente = "El Pepe",
+                        Monto = Random.Shared.Next(),
+
                     },
                     stoppingToken);
 

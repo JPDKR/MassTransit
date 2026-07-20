@@ -17,9 +17,6 @@ builder.Services.AddMassTransit(busConfigurator =>
 
     busConfigurator.SetKebabCaseEndpointNameFormatter();
 
-    busConfigurator.AddConsumer<CurrentTimeConsumer>();
-    busConfigurator.AddConsumer<CurrentTimeConsumerV2>();
-
     busConfigurator.AddConsumer<CrearOrdenConsumer>();
 
     busConfigurator.UsingRabbitMq((context, configurator) =>
@@ -29,8 +26,6 @@ builder.Services.AddMassTransit(busConfigurator =>
             h.Username("guest");
             h.Password("guest");
         });
-
-        configurator.ConfigureEndpoints(context);
 
         configurator.ReceiveEndpoint("crear-orden-queue", e =>
         {
