@@ -11,9 +11,10 @@ namespace MassTransit.Introduction.Consumers
             var mensaje = context.Message;
 
             _logger.LogInformation(
-                "Procesando orden {OrdenId} para {Cliente}",
+                "Procesando orden {OrdenId} para {Cliente}. Monto ${Monto}",
                 mensaje.OrdenId,
-                mensaje.Cliente);
+                mensaje.Cliente,
+                mensaje.Monto);
 
             // Simulación de trabajo
             await Task.Delay(2000);
